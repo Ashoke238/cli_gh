@@ -135,15 +135,3 @@ def create_jobs(repo_name, git_url, branch="dev"):
     infer_job_id = create_job(infer_job_json)
 
     return train_job_id, infer_job_id
-
-def get_existing_jobs():
-    response = requests.get(
-        f"{DATABRICKS_HOST}/api/2.1/jobs/list",
-        headers=headers
-    )
-    if response.status_code != 200:
-        logger.error(f"Failed to fetch jobs: {response.text}")
-        raise Exception(f"Failed to fetch jobs: {response.text}")
-
-    jobs = response.json().get("jobs", [])
-    return jobs
