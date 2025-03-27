@@ -87,18 +87,30 @@ def create_dev_branch(repo_name, base_branch="main", new_branch="dev"):
 
 def create_and_setup_repo(repo_name):
     validate_repo_availability(repo_name)
+    
+    # Creates repo with main initialized clearly
     repo = create_github_repo(repo_name)
+    
+    # Downloads & uploads all files to main clearly
     local_folder = download_and_extract_template()
     push_files_to_repo(repo, local_folder)
+
+    # Creates dev branch only after main is fully populated
     create_dev_branch(repo_name)
+
     return repo.clone_url
 
 def update_config_json(repo_name, train_job_id, infer_job_id, branch="dev"):
     g = Github(GITHUB_TOKEN)
     repo = g.get_user().get_repo(repo_name)
-    file_path = "mlops_conf_dev.json"
+    file_path = "mlops_config/mlops_config_dev.json"
+    logger.info(f"Updating '{file_path}' with new job IDs...")
+
+    #get the contents of the file
 
     contents = repo.get_contents(file_path, ref=branch)
+    #log the contents of the file
+    logger.info(f"Contents of the file: {contents.decoded_content.decode('utf-8')}")
     config_json = json.loads(contents.decoded_content.decode('utf-8'))
     config_json["train_job_id"] = train_job_id
     config_json["infer_job_id"] = infer_job_id
