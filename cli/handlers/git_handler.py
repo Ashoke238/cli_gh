@@ -144,6 +144,8 @@ def create_and_setup_repo(repo_name):
         "GH_TOKEN": os.getenv("GH_TOKEN"),
         "MLFLOW_USER_EMAIL": username if username else ""
     }
+    for key, value in secrets_dict.items():
+        logger.info(f"🔍 Secret {key}: {'✅ SET' if value else '❌ MISSING'}")
     add_github_repo_secrets(repo_name, secrets_dict)
 
     return repo.clone_url
