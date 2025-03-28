@@ -6,36 +6,40 @@ from datetime import datetime
 LOG_DIR = os.path.join(os.getcwd(), "logs")
 
 def setup_logger():
-    os.makedirs(LOG_DIR, exist_ok=True)
+    logger = logging.getLogger("cli_logger")
 
+    if logger.handlers:
+        return logger  # Prevent duplicate handlers
+
+    logger.setLevel(logging.INFO)
+
+    os.makedirs(LOG_DIR, exist_ok=True)
     log_filename = os.path.join(LOG_DIR, "cli.log")
 
-    # Timed rotating handler (1 file per day, max 30 backups)
-    handler = TimedRotatingFileHandler(
+    # File handler with rotation
+    file_handler = TimedRotatingFileHandler(
         filename=log_filename,
         when="midnight",
         interval=1,
         backupCount=30,
         encoding="utf-8"
     )
-    handler.suffix = "%Y-%m-%d"
-    handler.setFormatter(logging.Formatter(
+    file_handler.suffix = "%Y-%m-%d"
+    file_handler.setFormatter(logging.Formatter(
         fmt="%(asctime)s - %(levelname)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     ))
-    formatter = logging.Formatter(
-        fmt="%(asctime)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S")
 
-    # Stream handler to stdout
+    # Console stream handler
     stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(formatter)
+    stream_handler.setFormatter(logging.Formatter(
+        fmt="%(asctime)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    ))
 
-
-    logger = logging.getLogger("cli_logger")
-    logger.setLevel(logging.INFO)
-    logger.addHandler(handler)
+    # Add handlers just once
+    logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
-    logger.propagate = False
 
+    logger.propagate = False
     return logger
