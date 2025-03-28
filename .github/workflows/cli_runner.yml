@@ -62,3 +62,8 @@ jobs:
       run: |
         source venv/bin/activate
         python cli/main.py
+      env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
+          MLFLOW_USER_EMAIL: ${{ secrets.DATABRICKS_USERNAME }}
