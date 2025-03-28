@@ -8,7 +8,7 @@ from github.GithubException import GithubException
 from dotenv import load_dotenv
 from base64 import b64encode
 from nacl import encoding, public
-from logger import setup_logger
+from cli.logger import setup_logger
 
 # Load environment variables (locally or from GitHub Actions)
 load_dotenv()
