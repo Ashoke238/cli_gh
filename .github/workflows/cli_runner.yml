@@ -1,0 +1,47 @@
+name: Run CLI for Repo Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: 'Repository Name'
+        required: true
+      accuracy_train:
+        description: 'Accuracy Threshold for Training'
+        required: true
+        default: '0.85'
+      accuracy_inference:
+        description: 'Accuracy Threshold for Inference'
+        required: true
+        default: '0.80'
+
+jobs:
+  run-cli:
+    runs-on: ubuntu-latest
+    env:
+      REPO_NAME: ${{ github.event.inputs.repo_name }}
+      ACCURACY_TRAIN: ${{ github.event.inputs.accuracy_train }}
+      ACCURACY_INFERENCE: ${{ github.event.inputs.accuracy_inference }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Run CLI tool
+      run: |
+        source venv/bin/activate
+        python cli/main.py

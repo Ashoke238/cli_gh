@@ -3,6 +3,7 @@ import click
 from dotenv import load_dotenv
 from logger import setup_logger
 from validator import validate_inputs
+
 from handlers.git_handler import (
     validate_repo_availability,
     create_and_setup_repo,
@@ -20,12 +21,12 @@ load_dotenv()
 logger = setup_logger()
 
 # Databricks Username from environment
-DATABRICKS_USERNAME = os.getenv("DATABRICKS_USERNAME")
+#DATABRICKS_USERNAME = os.getenv("DATABRICKS_USERNAME")
 
 @click.command()
-@click.option('--repo-name', prompt='Repository Name', help='Enter your new repository name.')
-@click.option('--accuracy-train', prompt='Accuracy Threshold (Training)', type=float, help='Enter the accuracy threshold for training (0 to 1).')
-@click.option('--accuracy-inference', prompt='Accuracy Threshold (Inference)', type=float, help='Enter the accuracy threshold for inference (0 to 1).')
+@click.option('--repo-name', prompt='Repository Name', envvar='REPO_NAME', help='Enter your new repository name.')
+@click.option('--accuracy-train', prompt='Accuracy Threshold (Training)', type=float, envvar='ACCURACY_TRAIN', help='Enter the accuracy threshold for training (0 to 1).')
+@click.option('--accuracy-inference', prompt='Accuracy Threshold (Inference)', type=float, envvar='ACCURACY_INFERENCE', help='Enter the accuracy threshold for inference (0 to 1).')
 def main(repo_name, accuracy_train, accuracy_inference):
     try:
         # Step 1: Common Input Validation
