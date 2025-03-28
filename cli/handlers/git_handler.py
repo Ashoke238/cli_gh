@@ -136,12 +136,13 @@ def create_and_setup_repo(repo_name):
     create_dev_branch(repo_name)
 
     # Add secrets after dev branch is created
+    username = os.getenv("DATABRICKS_USERNAME")
     secrets_dict = {
         "DATABRICKS_HOST": os.getenv("DATABRICKS_HOST"),
         "DATABRICKS_TOKEN": os.getenv("DATABRICKS_TOKEN"),
         "DATABRICKS_USERNAME": os.getenv("DATABRICKS_USERNAME"),
         "GH_TOKEN": os.getenv("GH_TOKEN"),
-        "MLFLOW_USER_EMAIL": os.getenv("DATABRICKS_USERNAME")
+        "MLFLOW_USER_EMAIL": username if username else ""
     }
     add_github_repo_secrets(repo_name, secrets_dict)
 
