@@ -25,6 +25,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
+      MLFLOW_USER_EMAIL: ${{ secrets.MLFLOW_USER_EMAIL }}
 
     steps:
     - name: Checkout Repo
