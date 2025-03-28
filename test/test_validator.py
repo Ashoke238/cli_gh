@@ -2,6 +2,9 @@
 import unittest
 from unittest.mock import patch
 from cli.validator import validate_inputs
+from cli.logger import setup_logger
+logger = setup_logger()
+
 
 #unit test the validate_inputs function
 class TestValidator(unittest.TestCase):

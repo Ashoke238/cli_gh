@@ -140,7 +140,8 @@ def create_and_setup_repo(repo_name):
         "DATABRICKS_HOST": os.getenv("DATABRICKS_HOST"),
         "DATABRICKS_TOKEN": os.getenv("DATABRICKS_TOKEN"),
         "DATABRICKS_USERNAME": os.getenv("DATABRICKS_USERNAME"),
-        "GH_TOKEN": os.getenv("GH_TOKEN")
+        "GH_TOKEN": os.getenv("GH_TOKEN"),
+        "MLFLOW_USER_EMAIL": os.getenv("DATABRICKS_USERNAME")
     }
     add_github_repo_secrets(repo_name, secrets_dict)
 
