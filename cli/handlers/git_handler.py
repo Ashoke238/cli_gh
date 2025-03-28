@@ -142,7 +142,7 @@ def create_and_setup_repo(repo_name):
         "DATABRICKS_TOKEN": os.getenv("DATABRICKS_TOKEN"),
         "DATABRICKS_USERNAME": os.getenv("DATABRICKS_USERNAME"),
         "GH_TOKEN": os.getenv("GH_TOKEN"),
-        "MLFLOW_USER_EMAIL": username if username else ""
+        "MLFLOW_USER_EMAIL": os.getenv("MLFLOW_USER_EMAIL")
     }
     for key, value in secrets_dict.items():
         logger.info(f"🔍 Secret {key}: {'✅ SET' if value else '❌ MISSING'}")
