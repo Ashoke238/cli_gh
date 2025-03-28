@@ -64,7 +64,7 @@ def main(repo_name, accuracy_train, accuracy_inference):
         click.echo("🎉 All tasks executed successfully!")
 
     except Exception as e:
-        logger.error(f"❌ An error occurred: {str(e)}")
+        logger.error(f"❌ An error occurred", exc_info=True)
         click.echo(f"❌ An error occurred: {str(e)}", err=True)
         raise click.Abort()
 
