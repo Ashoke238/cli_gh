@@ -9,7 +9,7 @@ from cli.logger import setup_logger
 
 logger = setup_logger()
 
-def wait_for_github_pipeline_completion(repo_name, branch="dev", max_wait=300, poll_interval=20):
+def wait_for_github_pipeline_completion(repo_name, branch="dev", max_wait=1500, poll_interval=60):
     """
     Polls GitHub Actions for the latest workflow run in the given repo and branch until it's completed.
     """
