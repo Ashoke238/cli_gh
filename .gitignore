@@ -38,6 +38,7 @@ venv.bak/
 
 # Logs
 *.log
+*.log.*
 
 # Packaging artifacts
 build/
