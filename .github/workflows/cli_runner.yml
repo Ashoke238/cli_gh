@@ -35,6 +35,9 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Set PYTHONPATH for relative imports
+      run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
     - name: Install dependencies
       run: |
         python -m venv venv
