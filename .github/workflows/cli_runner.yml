@@ -46,6 +46,18 @@ jobs:
         source venv/bin/activate
         pip install -r requirements.txt
 
+    - name: Print environment (DEBUG)
+      run: |
+          echo "GH_TOKEN=$GH_TOKEN"
+          echo "DATABRICKS_HOST=$DATABRICKS_HOST"
+          echo "DATABRICKS_USERNAME=$DATABRICKS_USERNAME"
+          echo "MLFLOW_USER_EMAIL=$MLFLOW_USER_EMAIL"
+      env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
+          MLFLOW_USER_EMAIL: ${{ secrets.DATABRICKS_USERNAME }}
+
     - name: Run CLI tool
       run: |
         source venv/bin/activate
