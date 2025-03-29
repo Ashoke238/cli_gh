@@ -47,3 +47,26 @@ jobs:
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         DATABRICKS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
         MLFLOW_USER_EMAIL: ${{ secrets.MLFLOW_USER_EMAIL }}
+
+    - name: Push HTML Report to e2e_reports repo
+      run: |
+            git config --global user.email "gh-actions@users.noreply.github.com"
+            git config --global user.name "GitHub Actions"
+
+            git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Ashoke238/e2e_reports.git
+            cd e2e_reports
+
+            mkdir -p reports
+
+            # Copy the generated report
+            cp "$REPORT_PATH" reports/
+
+            # Append to index.html if not already present
+            REPORT_FILENAME=$(basename "$REPORT_PATH")
+            if ! grep -q "$REPORT_FILENAME" index.html; then
+            echo "<li><a href=\"reports/$REPORT_FILENAME\">$REPORT_FILENAME</a></li>" >> index.html
+            fi
+
+            git add reports/*.html index.html
+            git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
+            git push
