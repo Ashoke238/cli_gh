@@ -8,7 +8,7 @@ from pathlib import Path
 import time
 import requests
 
-def wait_for_repo_pipeline(repo_name, timeout_minutes=5):
+def wait_for_repo_pipeline(repo_name, timeout_minutes=15):
     print(f"⏳ Waiting for the pipeline in '{repo_name}' to complete...")
 
     headers = {
@@ -19,6 +19,8 @@ def wait_for_repo_pipeline(repo_name, timeout_minutes=5):
     url = f"https://api.github.com/repos/Ashoke238/{repo_name}/actions/runs"
     timeout = time.time() + timeout_minutes * 60
 
+    print("⏳ Waiting for latest workflow in repo to complete...", flush=True)
+
     while time.time() < timeout:
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
@@ -27,10 +29,10 @@ def wait_for_repo_pipeline(repo_name, timeout_minutes=5):
                 latest_run = workflows[0]
                 status = latest_run.get("status")
                 conclusion = latest_run.get("conclusion")
-                print(f"🌀 Status: {status}, Conclusion: {conclusion}")
+                print(f"🌀 Status: {status}, Conclusion: {conclusion}",flush=True)
                 if status == "completed":
                     return conclusion == "success"
-        time.sleep(15)
+        time.sleep(60)
 
     print("⚠️ Timed out waiting for pipeline to complete.")
     return False
