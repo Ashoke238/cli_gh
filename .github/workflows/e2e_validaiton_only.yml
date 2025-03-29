@@ -40,7 +40,7 @@ jobs:
     - name: Run E2E Validator Only
       run: |
         source venv/bin/activate
-        python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}"        
+        python e2e/run_e2e.py "${{ github.event.inputs.mock_repo }}"        
         echo "Reading report path from file:"
         cat report_path.txt
         REPORT_PATH=$(cat report_path.txt)
@@ -73,5 +73,5 @@ jobs:
             fi
 
             git add reports/*.html index.html
-            git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
+            git commit -m "✅ E2E report for ${{ github.event.inputs.mock_repo }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
             git push
