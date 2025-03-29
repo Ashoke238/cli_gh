@@ -63,15 +63,17 @@ jobs:
 
             mkdir -p reports
 
-            # Copy the generated report
-            cp "$REPORT_PATH" reports/
+            # Use full path to copy
+            echo "Trying to copy: ${{ github.workspace }}/$REPORT_PATH"
+            cp "${{ github.workspace }}/$REPORT_PATH" reports/
 
-            # Append to index.html if not already present
             REPORT_FILENAME=$(basename "$REPORT_PATH")
             if ! grep -q "$REPORT_FILENAME" index.html; then
             echo "<li><a href=\"reports/$REPORT_FILENAME\">$REPORT_FILENAME</a></li>" >> index.html
             fi
 
             git add reports/*.html index.html
-            git commit -m "✅ E2E report for ${{ github.event.inputs.mock_repo }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
+            git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
             git push
+        env:
+            REPORT_PATH: ${{ env.REPORT_PATH }}
