@@ -94,6 +94,7 @@ jobs:
           source venv/bin/activate
           REPORT_PATH=$(python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}")
           echo "REPORT_PATH=$REPORT_PATH" >> $GITHUB_ENV
+          echo "✅ Report path resolved to: $REPORT_PATH"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}

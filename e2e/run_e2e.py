@@ -92,7 +92,7 @@ if __name__ == "__main__":
     repo_name = sys.argv[1]
     report_path = run_e2e_validation(repo_name)
 
-    print(f"✅ Report generated at {report_path}")
+    print(report_path)
 
     # Export environment variable for GitHub Actions
     with open(os.environ['GITHUB_ENV'], 'a') as env_file:
