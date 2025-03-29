@@ -5,6 +5,34 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
+import time
+
+def wait_for_repo_pipeline(repo_name, timeout_minutes=5):
+    print(f"⏳ Waiting for the pipeline in '{repo_name}' to complete...")
+
+    headers = {
+        "Authorization": f"Bearer {os.getenv('GH_TOKEN')}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    url = f"https://api.github.com/repos/Ashoke238/{repo_name}/actions/runs"
+    timeout = time.time() + timeout_minutes * 60
+
+    while time.time() < timeout:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            workflows = response.json().get("workflow_runs", [])
+            if workflows:
+                latest_run = workflows[0]
+                status = latest_run.get("status")
+                conclusion = latest_run.get("conclusion")
+                print(f"🌀 Status: {status}, Conclusion: {conclusion}")
+                if status == "completed":
+                    return conclusion == "success"
+        time.sleep(15)
+
+    print("⚠️ Timed out waiting for pipeline to complete.")
+    return False
 
 def run_e2e_validation(repo_name):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -90,10 +118,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     repo_name = sys.argv[1]
-    report_path = run_e2e_validation(repo_name)
-
-    print(report_path)
-
-    # Export environment variable for GitHub Actions
-    with open(os.environ['GITHUB_ENV'], 'a') as env_file:
-        env_file.write(f"E2E_REPORT_PATH={report_path}\n")
+    
+    if wait_for_repo_pipeline(repo_name):
+        report_path = run_e2e_validation(repo_name)
+        print(f"✅ Report generated at {report_path}")
+    else:
+        print("❌ Skipping report generation: pipeline didn't complete successfully.")
+        sys.exit(1)
