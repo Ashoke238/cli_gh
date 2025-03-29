@@ -73,7 +73,7 @@ jobs:
             fi
 
             git add reports/*.html index.html
-            git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
+            git commit -m "✅ E2E report for ${{ github.event.inputs.mock_repo }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
             git push
-        env:
+      env:
             REPORT_PATH: ${{ env.REPORT_PATH }}
