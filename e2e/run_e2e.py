@@ -6,6 +6,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 import time
+import requests
 
 def wait_for_repo_pipeline(repo_name, timeout_minutes=5):
     print(f"⏳ Waiting for the pipeline in '{repo_name}' to complete...")
