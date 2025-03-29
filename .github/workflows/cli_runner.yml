@@ -102,16 +102,20 @@ jobs:
 
       - name: Push HTML Report to e2e_reports repo
         run: |
-          git config --global user.email "gh-actions@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-
-          git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Ashoke238/e2e_reports.git
-          mkdir -p e2e_reports/reports
-
-          # Copy over new reports and updated index from runner workspace
-          mv reports/e2e_report_*.html e2e_reports/reports/
-          mv index.html e2e_reports/
-
-          git add reports/*.html index.html
-          git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push
+            git config --global user.email "gh-actions@users.noreply.github.com"
+            git config --global user.name "GitHub Actions"
+        
+            git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Ashoke238/e2e_reports.git
+            cd e2e_reports
+        
+            REPORT_DIR="../reports/${{ github.event.inputs.repo_name }}"
+            if [ -d "$REPORT_DIR" ]; then
+              cp -r $REPORT_DIR/* reports/
+              cp ../index.html .
+              git add reports/*.html index.html
+              git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+              git push
+            else
+              echo "Report directory $REPORT_DIR does not exist."
+              exit 1
+            fi
