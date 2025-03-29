@@ -2,6 +2,7 @@
 
 import os
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -77,3 +78,17 @@ title: E2E Report - {timestamp}
             f.truncate()
 
     return report_path
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("❌ Please provide the GitHub repo name.")
+        sys.exit(1)
+
+    repo_name = sys.argv[1]
+    report_path = run_e2e_validation(repo_name)
+
+    print(f"✅ Report generated at {report_path}")
+
+    # Export environment variable for GitHub Actions
+    with open(os.environ['GITHUB_ENV'], 'a') as env_file:
+        env_file.write(f"E2E_REPORT_PATH={report_path}\n")

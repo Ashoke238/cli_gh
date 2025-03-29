@@ -108,14 +108,21 @@ jobs:
             git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Ashoke238/e2e_reports.git
             cd e2e_reports
         
-            REPORT_DIR="../reports/${{ github.event.inputs.repo_name }}"
-            if [ -d "$REPORT_DIR" ]; then
-              cp -r $REPORT_DIR/* reports/
-              cp ../index.html .
-              git add reports/*.html index.html
-              git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-              git push
-            else
-              echo "Report directory $REPORT_DIR does not exist."
-              exit 1
+            mkdir -p reports
+        
+            REPORT_FILENAME=$(basename "$E2E_REPORT_PATH")
+            REPORT_FOLDER=$(basename "$(dirname "$E2E_REPORT_PATH")")
+            DEST_FOLDER="reports/${REPORT_FOLDER}"
+        
+            mkdir -p "$DEST_FOLDER"
+            cp "../$E2E_REPORT_PATH" "$DEST_FOLDER/"
+        
+            # Append to index.html if not already present
+            RELATIVE_PATH="${DEST_FOLDER}/${REPORT_FILENAME}"
+            if ! grep -q "$RELATIVE_PATH" index.html; then
+              sed -i "/<ul>/a \ \ <li><a href=\"$RELATIVE_PATH\">$RELATIVE_PATH</a></li>" index.html
             fi
+        
+            git add "$DEST_FOLDER/$REPORT_FILENAME" index.html
+            git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
+            git push
