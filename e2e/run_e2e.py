@@ -8,9 +8,14 @@ from pathlib import Path
 
 def run_e2e_validation(repo_name):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    report_dir = f"reports/{repo_name}"
+    # Define the report filename using the repo_name and timestamp
+    report_filename = f"e2e_report_{repo_name}_{timestamp}.html"
+     # Define the directory where the report will be saved
+    report_dir = os.path.join("reports", repo_name)
     os.makedirs(report_dir, exist_ok=True)
-    report_path = f"{report_dir}/e2e_report_{repo_name}_{timestamp}.html"
+
+    # Define the full path for the report
+    report_path = os.path.join(report_dir, report_filename)
 
     # Generate the report using final HTML template
     html_content = f"""---
