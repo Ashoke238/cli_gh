@@ -41,6 +41,7 @@ jobs:
       run: |
         source venv/bin/activate
         python e2e/run_e2e.py "${REPO_NAME}"
+        REPORT_PATH=$(cat report_path.txt)
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
