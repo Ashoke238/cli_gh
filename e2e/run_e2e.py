@@ -122,9 +122,14 @@ if __name__ == "__main__":
 
     repo_name = sys.argv[1]
     
-    if wait_for_repo_pipeline(repo_name):
-        report_path = run_e2e_validation(repo_name)
-        print(f"✅ Report generated at {report_path}")
-    else:
-        print("❌ Skipping report generation: pipeline didn't complete successfully.")
+    print(f"⏳ Waiting for the pipeline in '{repo_name}' to complete...", file=sys.stderr)
+    success = wait_for_repo_pipeline(repo_name)
+
+    if not success:
+        print("❌ Pipeline did not complete successfully.", file=sys.stderr)
         sys.exit(1)
+
+    report_path = run_e2e_validation(repo_name)
+    
+    # 👇 ONLY THIS LINE will go to stdout and be captured
+    print(report_path)
