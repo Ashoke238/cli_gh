@@ -92,7 +92,8 @@ jobs:
       - name: Run E2E Validator
         run: |
           source venv/bin/activate
-          REPORT_PATH=$(python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}")
+          python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}"
+          REPORT_PATH=$(cat report_path.txt)
           echo "REPORT_PATH=$REPORT_PATH" >> $GITHUB_ENV
           echo "✅ Report path resolved to: $REPORT_PATH"
         env:
