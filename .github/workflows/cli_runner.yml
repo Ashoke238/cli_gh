@@ -92,7 +92,8 @@ jobs:
       - name: Run E2E Validator
         run: |
           source venv/bin/activate
-          python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}"
+          REPORT_PATH=$(python e2e/run_e2e.py "${{ github.event.inputs.repo_name }}")
+          echo "REPORT_PATH=$REPORT_PATH" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
@@ -104,25 +105,21 @@ jobs:
         run: |
             git config --global user.email "gh-actions@users.noreply.github.com"
             git config --global user.name "GitHub Actions"
-        
+
             git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Ashoke238/e2e_reports.git
             cd e2e_reports
-        
+
             mkdir -p reports
-        
-            REPORT_FILENAME=$(basename "$E2E_REPORT_PATH")
-            REPORT_FOLDER=$(basename "$(dirname "$E2E_REPORT_PATH")")
-            DEST_FOLDER="reports/${REPORT_FOLDER}"
-        
-            mkdir -p "$DEST_FOLDER"
-            cp "../$E2E_REPORT_PATH" "$DEST_FOLDER/"
-        
+
+            # Copy the generated report
+            cp "$REPORT_PATH" reports/
+
             # Append to index.html if not already present
-            RELATIVE_PATH="${DEST_FOLDER}/${REPORT_FILENAME}"
-            if ! grep -q "$RELATIVE_PATH" index.html; then
-              sed -i "/<ul>/a \ \ <li><a href=\"$RELATIVE_PATH\">$RELATIVE_PATH</a></li>" index.html
+            REPORT_FILENAME=$(basename "$REPORT_PATH")
+            if ! grep -q "$REPORT_FILENAME" index.html; then
+            echo "<li><a href=\"reports/$REPORT_FILENAME\">$REPORT_FILENAME</a></li>" >> index.html
             fi
-        
-            git add "$DEST_FOLDER/$REPORT_FILENAME" index.html
+
+            git add reports/*.html index.html
             git commit -m "✅ E2E report for ${{ github.event.inputs.repo_name }} - $(date +'%Y-%m-%d %H:%M:%S')" || echo "⚠️ Nothing to commit"
             git push
