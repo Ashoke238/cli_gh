@@ -1,0 +1,49 @@
+name: Run E2E Validation Only
+
+on:
+  workflow_dispatch:
+    inputs:
+      mock_repo:
+        description: 'Mock Repo Name (already created)'
+        required: true
+        default: 'e2e1_3'  # Replace with any real previously created repo
+
+jobs:
+  validate-e2e:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
+      MLFLOW_USER_EMAIL: ${{ secrets.MLFLOW_USER_EMAIL }}
+      REPO_NAME: ${{ github.event.inputs.mock_repo }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Run E2E Validator Only
+      run: |
+        source venv/bin/activate
+        python e2e/run_e2e.py "${REPO_NAME}"
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_USERNAME: ${{ secrets.DATABRICKS_USERNAME }}
+        MLFLOW_USER_EMAIL: ${{ secrets.MLFLOW_USER_EMAIL }}
